@@ -1,0 +1,85 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "feature_id": "ballona-wetland",
+        "name": "Ballona wetland (PLACEHOLDER OUTLINE)",
+        "type": "wetland",
+        "valid_from": 1769,
+        "valid_to": 1900,
+        "confidence": "speculative",
+        "terrain_edit_m": 1.5,
+        "vegetation": "reed",
+        "density_per_ha": 10,
+        "sources": "Placeholder. Replace with Dark et al. 2011, Historical Ecology of the Ballona Creek Watershed (SCCWRP).",
+        "notes": "Rough hand-drawn shape to test the viewer. Not researched."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[-118.452,33.972],[-118.428,33.985],[-118.405,33.978],[-118.405,33.955],[-118.428,33.950],[-118.452,33.958],[-118.452,33.972]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "feature_id": "willow-thicket",
+        "name": "Willow thicket (PLACEHOLDER)",
+        "type": "woodland",
+        "valid_from": 1769,
+        "valid_to": 1890,
+        "confidence": "inferred",
+        "terrain_edit_m": null,
+        "vegetation": "tree",
+        "density_per_ha": 8,
+        "sources": "Placeholder. An 1840s Rancho Ballona map reportedly shows a willow thicket near the mouth of Centinela Creek; location here is a guess.",
+        "notes": "Test shape for tree scattering."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[-118.400,33.985],[-118.380,33.985],[-118.380,33.970],[-118.400,33.970],[-118.400,33.985]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "feature_id": "la-river",
+        "name": "Los Angeles River, course A, west to Ballona (PLACEHOLDER)",
+        "type": "river",
+        "valid_from": 1769,
+        "valid_to": 1824,
+        "confidence": "speculative",
+        "terrain_edit_m": null,
+        "vegetation": null,
+        "density_per_ha": null,
+        "sources": "Placeholder. SCCWRP/SFEI describe the river shifting course in 1825.",
+        "notes": "Rough line. Same feature_id as course B: one river, two versions."
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [[-118.23,34.04],[-118.28,34.01],[-118.34,33.99],[-118.40,33.975]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "feature_id": "la-river",
+        "name": "Los Angeles River, course B, south to San Pedro Bay (PLACEHOLDER)",
+        "type": "river",
+        "valid_from": 1825,
+        "valid_to": 1930,
+        "confidence": "speculative",
+        "terrain_edit_m": null,
+        "vegetation": null,
+        "density_per_ha": null,
+        "sources": "Placeholder.",
+        "notes": "Rough line. The real course meandered and shifted."
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [[-118.23,34.04],[-118.22,33.98],[-118.20,33.92],[-118.20,33.85],[-118.21,33.77]]
+      }
+    }
+  ]
+}
