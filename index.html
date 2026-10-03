@@ -29,6 +29,11 @@ const ERAS = [1769, 1850, 1870, 1900, 1925, 2026];
 const Z = 13;                 // highest terrain tile level used (about 16 m per pixel here)
 const NEAR = { tree: 9000, reed: 3500 };   // camera height (m) below which vegetation is drawn
 
+const say = m => { document.getElementById('note').textContent = m; };
+window.addEventListener('error', e => say('Error: ' + e.message));
+window.addEventListener('unhandledrejection', e => say('Error: ' + (e.reason && e.reason.message || e.reason)));
+if (location.protocol === 'file:') say('This page was opened from a file. Features will not load this way; open it from your GitHub Pages address instead.');
+
 // ---------- Terrain: free AWS tiles (derived from USGS 3DEP), decoded in the browser ----------
 const loaded = new Map(), pending = new Map();
 function getTile(z, x, y) {
@@ -36,13 +41,15 @@ function getTile(z, x, y) {
   if (!pending.has(k)) pending.set(k, new Promise(res => {
     const im = new Image(); im.crossOrigin = 'anonymous';
     im.onload = () => {
-      const c = document.createElement('canvas'); c.width = c.height = 256;
-      const g = c.getContext('2d'); g.drawImage(im, 0, 0);
-      const d = g.getImageData(0, 0, 256, 256).data, h = new Float32Array(65536);
-      for (let i = 0; i < 65536; i++) h[i] = d[i*4]*256 + d[i*4+1] + d[i*4+2]/256 - 32768;
-      loaded.set(k, h); res(h);
+      try {
+        const c = document.createElement('canvas'); c.width = c.height = 256;
+        const g = c.getContext('2d'); g.drawImage(im, 0, 0);
+        const d = g.getImageData(0, 0, 256, 256).data, h = new Float32Array(65536);
+        for (let i = 0; i < 65536; i++) h[i] = d[i*4]*256 + d[i*4+1] + d[i*4+2]/256 - 32768;
+        loaded.set(k, h); res(h);
+      } catch (err) { say('Terrain tile could not be read: ' + err.message); res(new Float32Array(65536)); }
     };
-    im.onerror = () => res(new Float32Array(65536));
+    im.onerror = () => { say('Terrain tile failed to download (blocked by the browser or an extension?): ' + im.src); res(new Float32Array(65536)); };
     im.src = `https://s3.amazonaws.com/elevation-tiles-prod/terrarium/${z}/${x}/${y}.png`;
   }));
   return pending.get(k);
@@ -97,18 +104,54 @@ const viewer = new Cesium.Viewer('map', {
   navigationHelpButton: false, sceneModePicker: false, fullscreenButton: false, infoBox: true
 });
 viewer.scene.globe.baseColor = Cesium.Color.fromCssColorString('#8a9a6b');
-viewer.scene.globe.material = Cesium.createElevationBandMaterial({
-  scene: viewer.scene,
-  layers: [{ entries: [
-    { height: -50, color: new Cesium.Color(.18, .32, .45, 1) },
-    { height: 0,   color: new Cesium.Color(.28, .45, .55, 1) },
-    { height: 2,   color: new Cesium.Color(.60, .70, .50, 1) },
-    { height: 30,  color: new Cesium.Color(.62, .66, .42, 1) },
-    { height: 200, color: new Cesium.Color(.72, .62, .40, 1) },
-    { height: 900, color: new Cesium.Color(.55, .42, .32, 1) },
-    { height: 1800, color: new Cesium.Color(.82, .78, .72, 1) }
-  ], extendDownwards: true, extendUpwards: true }]
-});
+// ---------- Ground color: elevation tint + hillshade, drawn from the same elevation tiles ----------
+const STOPS = [[-50,[46,82,115]],[0,[71,115,140]],[2,[153,179,128]],[30,[158,168,107]],[200,[184,158,102]],[900,[140,107,82]],[1800,[209,199,184]]];
+function tint(h) {
+  if (h <= STOPS[0][0]) return STOPS[0][1];
+  for (let i = 1; i < STOPS.length; i++) if (h <= STOPS[i][0]) {
+    const [h0, c0] = STOPS[i-1], [h1, c1] = STOPS[i], t = (h - h0) / (h1 - h0);
+    return c0.map((v, k) => v + (c1[k] - v) * t);
+  }
+  return STOPS[STOPS.length - 1][1];
+}
+const EXAGGERATE = 3, LIGHT = [-.5, .5, .7071];   // light from the northwest, 45 degrees up
+async function shadeTile(x, y, l) {
+  const z = Math.min(l, Z), s = l - z, sc = 2 ** s, n = 2 ** l, W = 258;
+  const src = await getTile(z, x >> s, y >> s);
+  const ox = (x & (sc-1)) * 256 / sc, oy = (y & (sc-1)) * 256 / sc, step = 1 / sc;
+  const at = (u, v) => {
+    u = Math.max(0, Math.min(254.99, u)); v = Math.max(0, Math.min(254.99, v));
+    const i = u | 0, j = v | 0, fu = u - i, fv = v - j, p = j * 256 + i;
+    return (src[p]*(1-fu) + src[p+1]*fu) * (1-fv) + (src[p+256]*(1-fu) + src[p+257]*fu) * fv;
+  };
+  const H = new Float32Array(W * W), cell = [];
+  for (let py = -1; py <= 256; py++) {
+    const lat = Math.atan(Math.sinh(Math.PI * (1 - 2 * (y + py/256) / n))) * 180 / Math.PI;
+    cell[py+1] = 40075016.686 / (n * 256) * Math.cos(lat * Math.PI / 180);
+    for (let px = -1; px <= 256; px++)
+      H[(py+1)*W + px+1] = adjust((x + px/256) / n * 360 - 180, lat, at(ox + px*step, oy + py*step));
+  }
+  const cv = document.createElement('canvas'); cv.width = cv.height = 256;
+  const g = cv.getContext('2d'), img = g.createImageData(256, 256), d = img.data;
+  for (let py = 0; py < 256; py++) for (let px = 0; px < 256; px++) {
+    const i = (py+1)*W + px+1, c2 = 2 * cell[py+1];
+    const nx = -(H[i+1] - H[i-1]) / c2 * EXAGGERATE, ny = -(H[i-W] - H[i+W]) / c2 * EXAGGERATE;
+    const sh = (nx*LIGHT[0] + ny*LIGHT[1] + LIGHT[2]) / Math.hypot(nx, ny, 1);
+    const m = Math.max(.35, Math.min(1.35, .4 + .6 * sh / .7071)), c = tint(H[i]), o = (py*256 + px) * 4;
+    d[o] = Math.min(255, c[0]*m); d[o+1] = Math.min(255, c[1]*m); d[o+2] = Math.min(255, c[2]*m); d[o+3] = 255;
+  }
+  g.putImageData(img, 0, 0);
+  return cv;
+}
+function refreshImagery() {
+  viewer.imageryLayers.removeAll();
+  const p = new Cesium.UrlTemplateImageryProvider({ url: '/{z}/{x}/{y}', tilingScheme: new Cesium.WebMercatorTilingScheme(),
+    maximumLevel: 18, credit: 'Terrain: USGS 3DEP and SRTM via AWS Terrain Tiles' });
+  p.requestImage = (x, y, l) => shadeTile(x, y, l);
+  viewer.imageryLayers.addImageryProvider(p);
+}
+
+refreshImagery();
 viewer.camera.setView({
   destination: Cesium.Cartesian3.fromDegrees(-118.43, 33.90, 9000),
   orientation: { heading: 0, pitch: Cesium.Math.toRadians(-32), roll: 0 }
@@ -133,7 +176,7 @@ const ALPHA = { documented: .65, inferred: .45, speculative: .3 };
       ring = pos.map(c => { const g = Cesium.Cartographic.fromCartesian(c); return [Cesium.Math.toDegrees(g.longitude), Cesium.Math.toDegrees(g.latitude)]; });
       const col = p.type === 'wetland' ? Cesium.Color.fromCssColorString('#1f7a8c') : Cesium.Color.fromCssColorString('#3d7a3a');
       e.polygon.material = p.type === 'wetland'
-        ? new Cesium.StripeMaterialProperty({ evenColor: col.withAlpha(a + .2), oddColor: col.withAlpha(0), repeat: 30, orientation: Cesium.StripeOrientation.VERTICAL })
+        ? new Cesium.StripeMaterialProperty({ evenColor: col.withAlpha(a), oddColor: col.withAlpha(0), repeat: 16, orientation: Cesium.StripeOrientation.VERTICAL })
         : col.withAlpha(a);
       e.polygon.outline = false;
       extra = line(pos.concat(pos[0]), col);
@@ -154,6 +197,7 @@ async function setEra(i) {
 
   edits = active.filter(it => it.ring && typeof it.p.terrain_edit_m === 'number').map(it => ({ ring: it.ring, elev: it.p.terrain_edit_m }));
   viewer.terrainProvider = makeProvider();   // re-reads terrain with this era's edits
+  refreshImagery();
 
   plants.forEach(pr => viewer.scene.primitives.remove(pr.prim)); plants = [];
   const n = 2 ** Z;
@@ -167,18 +211,18 @@ async function setEra(i) {
     await Promise.all(loads);
 
     const areaHa = Math.abs(it.ring.reduce((s, [a, b], k, r) => { const [c, d] = r[(k+1) % r.length]; return s + (a*d - c*b); }, 0)) / 2 * 111320 * 111320 * Math.cos(y0 * Math.PI / 180) / 1e4;
-    const count = Math.min(5000, Math.round(areaHa * (it.p.density_per_ha || 1)));
+    const count = Math.min(15000, Math.round(areaHa * (it.p.density_per_ha || 1)));
     const rand = rng([...it.p.feature_id].reduce((s, c) => s * 31 + c.charCodeAt(0), 7));
     const isTree = it.p.vegetation === 'tree';
     const geom = isTree ? new Cesium.CylinderGeometry({ length: 10, topRadius: 0, bottomRadius: 3, slices: 8, vertexFormat: Cesium.PerInstanceColorAppearance.VERTEX_FORMAT })
-                        : new Cesium.CylinderGeometry({ length: 2, topRadius: .04, bottomRadius: .08, slices: 5, vertexFormat: Cesium.PerInstanceColorAppearance.VERTEX_FORMAT });
+                        : new Cesium.CylinderGeometry({ length: 2.5, topRadius: .9, bottomRadius: .15, slices: 6, vertexFormat: Cesium.PerInstanceColorAppearance.VERTEX_FORMAT });
     const instances = [];
     for (let k = 0, tries = 0; k < count && tries < count * 20; tries++) {
       const lon = x0 + rand() * (x1 - x0), lat = y0 + rand() * (y1 - y0);
       if (!inside(lon, lat, it.ring)) continue;
       k++;
       const s = .7 + rand() * .6, enu = Cesium.Transforms.eastNorthUpToFixedFrame(Cesium.Cartesian3.fromDegrees(lon, lat, groundAt(lon, lat)));
-      const m = Cesium.Matrix4.multiplyByTranslation(enu, new Cesium.Cartesian3(0, 0, (isTree ? 5 : 1) * s), new Cesium.Matrix4());
+      const m = Cesium.Matrix4.multiplyByTranslation(enu, new Cesium.Cartesian3(0, 0, (isTree ? 5 : 1.25) * s), new Cesium.Matrix4());
       Cesium.Matrix4.multiplyByUniformScale(m, s, m);
       const shade = .8 + rand() * .4;
       instances.push(new Cesium.GeometryInstance({ geometry: geom, modelMatrix: m, attributes: { color: Cesium.ColorGeometryInstanceAttribute.fromColor(

@@ -12,7 +12,7 @@
         "confidence": "speculative",
         "terrain_edit_m": 1.5,
         "vegetation": "reed",
-        "density_per_ha": 10,
+        "density_per_ha": 12,
         "sources": "Placeholder. Replace with Dark et al. 2011, Historical Ecology of the Ballona Creek Watershed (SCCWRP).",
         "notes": "Rough hand-drawn shape to test the viewer. Not researched."
       },

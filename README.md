@@ -21,7 +21,7 @@ Terrain at year T = modern terrain (USGS 3DEP, via free AWS tiles) + every featu
 | `confidence` | yes | `documented` (directly shown on a source), `inferred` (reasoned from evidence), or `speculative` (a guess). Shown on screen as solid versus dashed outlines and lighter fill. |
 | `terrain_edit_m` | no | Polygons only. Flattens the ground in the shape to this elevation in meters above sea level during its dates. `null` for no change. |
 | `vegetation` | no | `tree` or `reed`. The viewer scatters plants inside the polygon. |
-| `density_per_ha` | no | Plants per hectare. Capped at 5000 per shape for now. |
+| `density_per_ha` | no | Plants per hectare. Capped at 15000 per shape for now. |
 | `sources` | yes | Citation(s): author, year, title, map or page. |
 | `notes` | no | Reasoning, caveats. |
 
@@ -40,7 +40,7 @@ The slider snaps between eras listed at the top of the script in `index.html` (`
 ## Known limits
 
 - Terrain edits create a hard step at a polygon's edge. Smoother blending comes later.
-- Plants are simple placeholder shapes (cones and thin cylinders). Real tree and rush models can replace them later.
+- Plants are simple placeholder shapes (cones and reed clumps). Real tree and rush models can replace them later.
 - Terrain is about 16 m per pixel, so it looks smooth up close.
-- The ground is colored by elevation, not imagery.
+- The ground is colored by elevation with computed hillshade, not imagery.
 - Modern terrain includes freeways, fill and grading. Features that need correction should use `terrain_edit_m`.
