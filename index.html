@@ -29,11 +29,6 @@ const ERAS = [1769, 1850, 1870, 1900, 1925, 2026];
 const Z = 13;                 // highest terrain tile level used (about 16 m per pixel here)
 const NEAR = { tree: 9000, reed: 3500 };   // camera height (m) below which vegetation is drawn
 
-const say = m => { document.getElementById('note').textContent = m; };
-window.addEventListener('error', e => say('Error: ' + e.message));
-window.addEventListener('unhandledrejection', e => say('Error: ' + (e.reason && e.reason.message || e.reason)));
-if (location.protocol === 'file:') say('This page was opened from a file. Features will not load this way; open it from your GitHub Pages address instead.');
-
 // ---------- Terrain: free AWS tiles (derived from USGS 3DEP), decoded in the browser ----------
 const loaded = new Map(), pending = new Map();
 function getTile(z, x, y) {
@@ -41,15 +36,13 @@ function getTile(z, x, y) {
   if (!pending.has(k)) pending.set(k, new Promise(res => {
     const im = new Image(); im.crossOrigin = 'anonymous';
     im.onload = () => {
-      try {
-        const c = document.createElement('canvas'); c.width = c.height = 256;
-        const g = c.getContext('2d'); g.drawImage(im, 0, 0);
-        const d = g.getImageData(0, 0, 256, 256).data, h = new Float32Array(65536);
-        for (let i = 0; i < 65536; i++) h[i] = d[i*4]*256 + d[i*4+1] + d[i*4+2]/256 - 32768;
-        loaded.set(k, h); res(h);
-      } catch (err) { say('Terrain tile could not be read: ' + err.message); res(new Float32Array(65536)); }
+      const c = document.createElement('canvas'); c.width = c.height = 256;
+      const g = c.getContext('2d'); g.drawImage(im, 0, 0);
+      const d = g.getImageData(0, 0, 256, 256).data, h = new Float32Array(65536);
+      for (let i = 0; i < 65536; i++) h[i] = d[i*4]*256 + d[i*4+1] + d[i*4+2]/256 - 32768;
+      loaded.set(k, h); res(h);
     };
-    im.onerror = () => { say('Terrain tile failed to download (blocked by the browser or an extension?): ' + im.src); res(new Float32Array(65536)); };
+    im.onerror = () => res(new Float32Array(65536));
     im.src = `https://s3.amazonaws.com/elevation-tiles-prod/terrarium/${z}/${x}/${y}.png`;
   }));
   return pending.get(k);
@@ -151,7 +144,6 @@ const ALPHA = { documented: .65, inferred: .45, speculative: .3 };
     items.push({ e, extra, p, ring });
   }
   setEra(+document.getElementById('slider').value);
-  if (location.protocol !== 'file:') say(`Loaded ${items.length} features (placeholder data). Click one for sources. Zoom in close to see plants. Terrain: USGS 3DEP and SRTM via AWS Terrain Tiles.`);
 })();
 
 async function setEra(i) {
