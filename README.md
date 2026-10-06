@@ -8,15 +8,6 @@ An interactive 3D view of the Los Angeles Basin before widespread settlement. Ev
 
 Terrain at year T = modern terrain (USGS 3DEP, via free AWS tiles) + every feature whose dates include T. There are no per-era terrain files.
 
-## Deploy on GitHub Pages
-
-1. Create a GitHub account and a new **public** repository (for example `lost-la`).
-2. Click **Add file > Upload files** and drag in `index.html`, `README.md` and the `data` folder. Click **Commit changes**.
-3. Go to **Settings > Pages**. Under "Build and deployment", set Source to **Deploy from a branch**, Branch to **main**, folder **/ (root)**, and Save.
-4. Wait a minute or two. The site address appears at the top of the Pages screen.
-
-The viewer must be opened from that web address. Double-clicking `index.html` on your computer won't load the data file.
-
 ## Data schema
 
 `data/features.geojson` is a list of features. Each has a shape (geometry) and these properties. Keep the names exactly as written.
