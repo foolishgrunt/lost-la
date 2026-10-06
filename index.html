@@ -20,14 +20,19 @@
 <div id="map"></div>
 <div id="panel">
   <p id="era"></p>
-  <input id="slider" type="range" min="0" max="5" step="1" value="1">
+  <input id="slider" type="range" min="0" max="6" step="1" value="1">
   <div id="ticks"></div>
   <p id="note">Placeholder data for testing. Click a feature to see its sources. Zoom in close to see vegetation appear.</p>
 </div>
 <script>
-const ERAS = [1769, 1850, 1870, 1900, 1925, 2026];
+const ERAS = [1769, 1850, 1870, 1900, 1925, 1950, 2026];
 const Z = 13;                 // highest terrain tile level used (about 16 m per pixel here)
-const NEAR = { tree: 9000, reed: 3500 };   // camera height (m) below which vegetation is drawn
+// Plant shapes. 'near' = camera height (m) below which they are drawn; c = RGB 0-1. Add a kind here, then use it in landtypes.json.
+const VEG = {
+  tree:  { len: 10,  top: 0,  bot: 3,   sl: 8, c: [.15, .38, .16], near: 9000 },
+  reed:  { len: 2.5, top: .9, bot: .15, sl: 6, c: [.55, .62, .30], near: 3500 },
+  shrub: { len: 1.6, top: .5, bot: 1.3, sl: 7, c: [.45, .52, .30], near: 4500 }
+};
 
 const say = m => { document.getElementById('note').textContent = m; };
 window.addEventListener('error', e => say('Error: ' + e.message));
@@ -163,26 +168,36 @@ function rng(seed) { let a = seed; return () => { a |= 0; a = a + 0x6D2B79F5 | 0
 const ALPHA = { documented: .65, inferred: .45, speculative: .3 };
 
 (async () => {
+  const reg = await (await fetch('data/landtypes.json')).json();
+  const TYPES = Object.fromEntries(reg.types.map(t => [t.id, t]));
   const ds = await Cesium.GeoJsonDataSource.load('data/features.geojson', { clampToGround: true });
   await viewer.dataSources.add(ds);
+  const LAYER = { natural: 0, agricultural: 1, urban: 2 };   // later layers draw on top
   for (const e of ds.entities.values) {
     const p = e.properties.getValue(Cesium.JulianDate.now());
+    const T = TYPES[p.landtype];
+    if (!T) { say('Unknown landtype "' + p.landtype + '" in feature ' + p.feature_id); e.show = false; continue; }
+    p.vegetation = p.vegetation ?? T.vegetation; p.density_per_ha = p.density_per_ha ?? T.density_per_ha;
     const a = ALPHA[p.confidence] ?? .3, dashed = p.confidence !== 'documented';
-    const line = (positions, color) => viewer.entities.add({ polyline: { positions, width: 3, clampToGround: true,
-      material: dashed ? new Cesium.PolylineDashMaterialProperty({ color, dashLength: 14 }) : color } });
+    const col = Cesium.Color.fromCssColorString(T.color);
+    const lineMat = (c, dash) => dash ? new Cesium.PolylineDashMaterialProperty({ color: c, dashLength: 14 }) : c;
     let extra = null, ring = null;
     if (e.polygon) {
       const pos = e.polygon.hierarchy.getValue().positions;
       ring = pos.map(c => { const g = Cesium.Cartographic.fromCartesian(c); return [Cesium.Math.toDegrees(g.longitude), Cesium.Math.toDegrees(g.latitude)]; });
-      const col = p.type === 'wetland' ? Cesium.Color.fromCssColorString('#1f7a8c') : Cesium.Color.fromCssColorString('#3d7a3a');
-      e.polygon.material = p.type === 'wetland'
+      e.polygon.material = T.pattern === 'hatch'
         ? new Cesium.StripeMaterialProperty({ evenColor: col.withAlpha(a), oddColor: col.withAlpha(0), repeat: 16, orientation: Cesium.StripeOrientation.VERTICAL })
+        : T.pattern === 'grid'
+        ? new Cesium.GridMaterialProperty({ color: col.withAlpha(a + .25), cellAlpha: 0, lineCount: new Cesium.Cartesian2(12, 12), lineThickness: new Cesium.Cartesian2(1.5, 1.5) })
         : col.withAlpha(a);
       e.polygon.outline = false;
-      extra = line(pos.concat(pos[0]), col);
+      e.polygon.zIndex = LAYER[T.category] ?? 0;
+      extra = viewer.entities.add({ polyline: { positions: pos.concat(pos[0]), width: 2, clampToGround: true, material: lineMat(col, dashed) } });
     } else if (e.polyline) {
-      e.polyline.material = dashed ? new Cesium.PolylineDashMaterialProperty({ color: Cesium.Color.fromCssColorString('#3a8fd1'), dashLength: 14 }) : Cesium.Color.fromCssColorString('#3a8fd1');
-      e.polyline.width = 4;
+      e.polyline.material = lineMat(col, dashed || T.dash); e.polyline.width = T.width || 3;
+    } else if (e.billboard) {
+      e.billboard = undefined;
+      e.point = new Cesium.PointGraphics({ pixelSize: 10, color: col, outlineColor: Cesium.Color.WHITE, outlineWidth: 2, heightReference: Cesium.HeightReference.CLAMP_TO_GROUND });
     }
     items.push({ e, extra, p, ring });
   }
@@ -202,7 +217,7 @@ async function setEra(i) {
   plants.forEach(pr => viewer.scene.primitives.remove(pr.prim)); plants = [];
   const n = 2 ** Z;
   for (const it of active) {
-    if (!it.ring || !it.p.vegetation) continue;
+    const V = VEG[it.p.vegetation]; if (!it.ring || !V) continue;
     const lons = it.ring.map(r => r[0]), lats = it.ring.map(r => r[1]);
     const [x0, x1, y0, y1] = [Math.min(...lons), Math.max(...lons), Math.min(...lats), Math.max(...lats)];
     const tx = l => Math.floor((l + 180) / 360 * n), ty = la => { const r = la * Math.PI / 180; return Math.floor((1 - Math.log(Math.tan(r) + 1/Math.cos(r)) / Math.PI) / 2 * n); };
@@ -213,25 +228,23 @@ async function setEra(i) {
     const areaHa = Math.abs(it.ring.reduce((s, [a, b], k, r) => { const [c, d] = r[(k+1) % r.length]; return s + (a*d - c*b); }, 0)) / 2 * 111320 * 111320 * Math.cos(y0 * Math.PI / 180) / 1e4;
     const count = Math.min(15000, Math.round(areaHa * (it.p.density_per_ha || 1)));
     const rand = rng([...it.p.feature_id].reduce((s, c) => s * 31 + c.charCodeAt(0), 7));
-    const isTree = it.p.vegetation === 'tree';
-    const geom = isTree ? new Cesium.CylinderGeometry({ length: 10, topRadius: 0, bottomRadius: 3, slices: 8, vertexFormat: Cesium.PerInstanceColorAppearance.VERTEX_FORMAT })
-                        : new Cesium.CylinderGeometry({ length: 2.5, topRadius: .9, bottomRadius: .15, slices: 6, vertexFormat: Cesium.PerInstanceColorAppearance.VERTEX_FORMAT });
+    const geom = new Cesium.CylinderGeometry({ length: V.len, topRadius: V.top, bottomRadius: V.bot, slices: V.sl, vertexFormat: Cesium.PerInstanceColorAppearance.VERTEX_FORMAT });
     const instances = [];
     for (let k = 0, tries = 0; k < count && tries < count * 20; tries++) {
       const lon = x0 + rand() * (x1 - x0), lat = y0 + rand() * (y1 - y0);
       if (!inside(lon, lat, it.ring)) continue;
       k++;
       const s = .7 + rand() * .6, enu = Cesium.Transforms.eastNorthUpToFixedFrame(Cesium.Cartesian3.fromDegrees(lon, lat, groundAt(lon, lat)));
-      const m = Cesium.Matrix4.multiplyByTranslation(enu, new Cesium.Cartesian3(0, 0, (isTree ? 5 : 1.25) * s), new Cesium.Matrix4());
+      const m = Cesium.Matrix4.multiplyByTranslation(enu, new Cesium.Cartesian3(0, 0, (V.len / 2) * s), new Cesium.Matrix4());
       Cesium.Matrix4.multiplyByUniformScale(m, s, m);
       const shade = .8 + rand() * .4;
       instances.push(new Cesium.GeometryInstance({ geometry: geom, modelMatrix: m, attributes: { color: Cesium.ColorGeometryInstanceAttribute.fromColor(
-        isTree ? new Cesium.Color(.15 * shade, .38 * shade, .16 * shade, 1) : new Cesium.Color(.55 * shade, .62 * shade, .30 * shade, 1)) } }));
+        new Cesium.Color(V.c[0] * shade, V.c[1] * shade, V.c[2] * shade, 1)) } }));
     }
     if (!instances.length) continue;
     const prim = viewer.scene.primitives.add(new Cesium.Primitive({ geometryInstances: instances, asynchronous: false,
       appearance: new Cesium.PerInstanceColorAppearance({ translucent: false, closed: true }) }));
-    plants.push({ prim, near: NEAR[it.p.vegetation] || 3000 });
+    plants.push({ prim, near: V.near });
   }
 }
 

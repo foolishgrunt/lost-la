@@ -1,0 +1,47 @@
+{
+  "about": "One entry per kind of land. The viewer reads this file, so adding a type here is all it takes to use it in features.geojson. category: natural, agricultural, urban or transport. geometry: polygon, line or point. pattern (polygons): hatch, grid, or leave out for solid. vegetation: tree, reed or shrub. width/dash: lines only.",
+  "types": [
+    { "id": "open_water",         "label": "Open water (bay, lagoon)",             "category": "natural", "geometry": "polygon", "color": "#3f7fb0" },
+    { "id": "beach",              "label": "Beach",                                "category": "natural", "geometry": "polygon", "color": "#eadfb4" },
+    { "id": "dune",               "label": "Dune",                                 "category": "natural", "geometry": "polygon", "color": "#e0cc94", "vegetation": "shrub", "density_per_ha": 8 },
+    { "id": "tidal_flat",         "label": "Salt flat / tidal flat",               "category": "natural", "geometry": "polygon", "color": "#b8b394", "pattern": "hatch" },
+    { "id": "salt_marsh",         "label": "Brackish to salt marsh / tidal marsh", "category": "natural", "geometry": "polygon", "color": "#4f8f78", "pattern": "hatch", "vegetation": "reed", "density_per_ha": 12 },
+    { "id": "alkali_flat",        "label": "Alkali flat",                          "category": "natural", "geometry": "polygon", "color": "#d6cfc0", "pattern": "grid" },
+    { "id": "alkali_meadow",      "label": "Alkali meadow",                        "category": "natural", "geometry": "polygon", "color": "#b5b06c" },
+    { "id": "wet_meadow",         "label": "Wet meadow",                           "category": "natural", "geometry": "polygon", "color": "#7fa858" },
+    { "id": "freshwater_marsh",   "label": "Valley freshwater marsh",              "category": "natural", "geometry": "polygon", "color": "#1f8a86", "pattern": "hatch", "vegetation": "reed", "density_per_ha": 12 },
+    { "id": "pond",               "label": "Perennial freshwater pond",            "category": "natural", "geometry": "polygon", "color": "#4aa3c7" },
+    { "id": "vernal_pool",        "label": "Vernal pool",                          "category": "natural", "geometry": "polygon", "color": "#7fb8c9", "pattern": "grid" },
+    { "id": "willow_thicket",     "label": "Willow thicket",                       "category": "natural", "geometry": "polygon", "color": "#3c7a3a", "vegetation": "tree", "density_per_ha": 10 },
+    { "id": "riparian_woodland",  "label": "Riparian woodland (sycamore, cottonwood)", "category": "natural", "geometry": "polygon", "color": "#4a8a3c", "vegetation": "tree", "density_per_ha": 8 },
+    { "id": "oak_woodland",       "label": "Oak woodland / savanna",               "category": "natural", "geometry": "polygon", "color": "#5d7f35", "vegetation": "tree", "density_per_ha": 4 },
+    { "id": "coastal_sage_scrub", "label": "Coastal sage scrub",                   "category": "natural", "geometry": "polygon", "color": "#a3ad74", "vegetation": "shrub", "density_per_ha": 25 },
+    { "id": "chaparral",          "label": "Chaparral",                            "category": "natural", "geometry": "polygon", "color": "#78814f", "vegetation": "shrub", "density_per_ha": 35 },
+    { "id": "grassland",          "label": "Grassland",                            "category": "natural", "geometry": "polygon", "color": "#bdbb78" },
+    { "id": "stream",             "label": "River or stream (natural course)",     "category": "natural", "geometry": "line",    "color": "#3a8fd1", "width": 4 },
+    { "id": "spring",             "label": "Spring or seep",                       "category": "natural", "geometry": "point",   "color": "#1fa3d0" },
+
+    { "id": "orange_grove",       "label": "Orange / citrus grove",                "category": "agricultural", "geometry": "polygon", "color": "#d98a2b", "vegetation": "tree", "density_per_ha": 40 },
+    { "id": "walnut_grove",       "label": "Walnut grove",                         "category": "agricultural", "geometry": "polygon", "color": "#7a8f3b", "vegetation": "tree", "density_per_ha": 25 },
+    { "id": "vineyard",           "label": "Vineyard",                             "category": "agricultural", "geometry": "polygon", "color": "#8a5a8f", "pattern": "grid" },
+    { "id": "row_crops",          "label": "Row crops / truck farming (beans, vegetables)", "category": "agricultural", "geometry": "polygon", "color": "#c9c36b", "pattern": "grid" },
+    { "id": "dry_farming",        "label": "Dry-farmed grain (wheat, barley)",     "category": "agricultural", "geometry": "polygon", "color": "#d8c78c" },
+    { "id": "pasture",            "label": "Pasture / rangeland",                  "category": "agricultural", "geometry": "polygon", "color": "#a9bd7c" },
+
+    { "id": "rural_settlement",   "label": "Rural settlement / farmstead",         "category": "urban", "geometry": "polygon", "color": "#c4b69a" },
+    { "id": "suburb",             "label": "Suburb (residential)",                 "category": "urban", "geometry": "polygon", "color": "#b8ac9a" },
+    { "id": "city_center",        "label": "City center (dense commercial)",       "category": "urban", "geometry": "polygon", "color": "#85858c" },
+    { "id": "industrial",         "label": "Industrial",                           "category": "urban", "geometry": "polygon", "color": "#6e6a64" },
+    { "id": "oil_field",          "label": "Oil field",                            "category": "urban", "geometry": "polygon", "color": "#5a4a42", "pattern": "grid" },
+    { "id": "airport",            "label": "Airport",                              "category": "urban", "geometry": "polygon", "color": "#9a9ea3" },
+    { "id": "harbor",             "label": "Harbor / marina",                      "category": "urban", "geometry": "polygon", "color": "#55687a" },
+
+    { "id": "street_minor",       "label": "Minor street",                         "category": "transport", "geometry": "line", "color": "#d8cfbb", "width": 2 },
+    { "id": "street_major",       "label": "Major street",                         "category": "transport", "geometry": "line", "color": "#eadfc2", "width": 3 },
+    { "id": "highway",            "label": "Highway",                              "category": "transport", "geometry": "line", "color": "#e0a458", "width": 4 },
+    { "id": "freeway",            "label": "Freeway",                              "category": "transport", "geometry": "line", "color": "#d9534f", "width": 6 },
+    { "id": "railroad_heavy",     "label": "Railroad (heavy rail)",                "category": "transport", "geometry": "line", "color": "#3b3b3b", "width": 3, "dash": true },
+    { "id": "railroad_light",     "label": "Light rail / streetcar / interurban",  "category": "transport", "geometry": "line", "color": "#6a5a7a", "width": 3, "dash": true },
+    { "id": "flood_channel",      "label": "Flood-control channel",                "category": "transport", "geometry": "line", "color": "#7aa6bd", "width": 5 }
+  ]
+}

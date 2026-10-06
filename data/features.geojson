@@ -1,85 +1,802 @@
 {
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "feature_id": "ballona-wetland",
-        "name": "Ballona wetland (PLACEHOLDER OUTLINE)",
-        "type": "wetland",
-        "valid_from": 1769,
-        "valid_to": 1900,
-        "confidence": "speculative",
-        "terrain_edit_m": 1.5,
-        "vegetation": "reed",
-        "density_per_ha": 12,
-        "sources": "Placeholder. Replace with Dark et al. 2011, Historical Ecology of the Ballona Creek Watershed (SCCWRP).",
-        "notes": "Rough hand-drawn shape to test the viewer. Not researched."
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [[[-118.452,33.972],[-118.428,33.985],[-118.405,33.978],[-118.405,33.955],[-118.428,33.950],[-118.452,33.958],[-118.452,33.972]]]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "feature_id": "willow-thicket",
-        "name": "Willow thicket (PLACEHOLDER)",
-        "type": "woodland",
-        "valid_from": 1769,
-        "valid_to": 1890,
-        "confidence": "inferred",
-        "terrain_edit_m": null,
-        "vegetation": "tree",
-        "density_per_ha": 8,
-        "sources": "Placeholder. An 1840s Rancho Ballona map reportedly shows a willow thicket near the mouth of Centinela Creek; location here is a guess.",
-        "notes": "Test shape for tree scattering."
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [[[-118.400,33.985],[-118.380,33.985],[-118.380,33.970],[-118.400,33.970],[-118.400,33.985]]]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "feature_id": "la-river",
-        "name": "Los Angeles River, course A, west to Ballona (PLACEHOLDER)",
-        "type": "river",
-        "valid_from": 1769,
-        "valid_to": 1824,
-        "confidence": "speculative",
-        "terrain_edit_m": null,
-        "vegetation": null,
-        "density_per_ha": null,
-        "sources": "Placeholder. SCCWRP/SFEI describe the river shifting course in 1825.",
-        "notes": "Rough line. Same feature_id as course B: one river, two versions."
-      },
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [[-118.23,34.04],[-118.28,34.01],[-118.34,33.99],[-118.40,33.975]]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "feature_id": "la-river",
-        "name": "Los Angeles River, course B, south to San Pedro Bay (PLACEHOLDER)",
-        "type": "river",
-        "valid_from": 1825,
-        "valid_to": 1930,
-        "confidence": "speculative",
-        "terrain_edit_m": null,
-        "vegetation": null,
-        "density_per_ha": null,
-        "sources": "Placeholder.",
-        "notes": "Rough line. The real course meandered and shifted."
-      },
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [[-118.23,34.04],[-118.22,33.98],[-118.20,33.92],[-118.20,33.85],[-118.21,33.77]]
-      }
-    }
-  ]
+ "type": "FeatureCollection",
+ "features": [
+  {
+   "type": "Feature",
+   "properties": {
+    "feature_id": "ballona-salt-marsh",
+    "name": "Lower Ballona salt marsh",
+    "landtype": "salt_marsh",
+    "valid_from": 1769,
+    "valid_to": 1962,
+    "confidence": "speculative",
+    "sources": "Existence supported by Dark et al. 2011 (SCCWRP Technical Report 671); the outline here is an untraced guess.",
+    "terrain_edit_m": 1.5
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -118.452,
+       33.972
+      ],
+      [
+       -118.428,
+       33.985
+      ],
+      [
+       -118.405,
+       33.978
+      ],
+      [
+       -118.405,
+       33.955
+      ],
+      [
+       -118.428,
+       33.95
+      ],
+      [
+       -118.452,
+       33.958
+      ],
+      [
+       -118.452,
+       33.972
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "feature_id": "ballona-tidal-flat",
+    "name": "Ballona creek-mouth tidal flat",
+    "landtype": "tidal_flat",
+    "valid_from": 1769,
+    "valid_to": 1962,
+    "confidence": "speculative",
+    "sources": "Existence supported by Dark et al. 2011 (SCCWRP Technical Report 671); the outline here is an untraced guess."
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -118.452,
+       33.962
+      ],
+      [
+       -118.44,
+       33.966
+      ],
+      [
+       -118.436,
+       33.958
+      ],
+      [
+       -118.446,
+       33.955
+      ],
+      [
+       -118.452,
+       33.962
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "feature_id": "ballona-alkali-meadow",
+    "name": "Ballona alkali meadow",
+    "landtype": "alkali_meadow",
+    "valid_from": 1850,
+    "valid_to": 1925,
+    "confidence": "speculative",
+    "sources": "Existence supported by Dark et al. 2011 (SCCWRP Technical Report 671); the outline here is an untraced guess."
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -118.405,
+       33.978
+      ],
+      [
+       -118.405,
+       33.995
+      ],
+      [
+       -118.38,
+       33.992
+      ],
+      [
+       -118.375,
+       33.975
+      ],
+      [
+       -118.395,
+       33.972
+      ],
+      [
+       -118.405,
+       33.978
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "feature_id": "la-cienega-marsh",
+    "name": "La Cienega freshwater marsh",
+    "landtype": "freshwater_marsh",
+    "valid_from": 1850,
+    "valid_to": 1900,
+    "confidence": "speculative",
+    "sources": "Existence supported by Dark et al. 2011 (SCCWRP Technical Report 671); the outline here is an untraced guess."
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -118.385,
+       34.012
+      ],
+      [
+       -118.355,
+       34.015
+      ],
+      [
+       -118.35,
+       34.0
+      ],
+      [
+       -118.378,
+       33.998
+      ],
+      [
+       -118.385,
+       34.012
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "feature_id": "ballona-willow-thicket",
+    "name": "Willow thicket at the Ballona-Centinela confluence",
+    "landtype": "willow_thicket",
+    "valid_from": 1850,
+    "valid_to": 1890,
+    "confidence": "speculative",
+    "sources": "Existence supported by Dark et al. 2011 (SCCWRP Technical Report 671); the outline here is an untraced guess. Source maps disagree on date (c. 1840s vs c. 1860)."
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -118.402,
+       33.988
+      ],
+      [
+       -118.388,
+       33.989
+      ],
+      [
+       -118.386,
+       33.98
+      ],
+      [
+       -118.4,
+       33.979
+      ],
+      [
+       -118.402,
+       33.988
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "feature_id": "santa-monica-bay-beach",
+    "name": "Santa Monica Bay beach (Venice to Playa del Rey)",
+    "landtype": "beach",
+    "valid_from": 1769,
+    "valid_to": null,
+    "confidence": "speculative",
+    "sources": "UNVERIFIED: placeholder outline drawn by Claude from general geography. Replace with a traced source."
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -118.475,
+       33.992
+      ],
+      [
+       -118.467,
+       33.992
+      ],
+      [
+       -118.452,
+       33.955
+      ],
+      [
+       -118.46,
+       33.955
+      ],
+      [
+       -118.475,
+       33.992
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "feature_id": "el-segundo-dunes",
+    "name": "Coastal dunes south of Ballona",
+    "landtype": "dune",
+    "valid_from": 1769,
+    "valid_to": 1940,
+    "confidence": "speculative",
+    "sources": "UNVERIFIED: placeholder outline drawn by Claude from general geography. Replace with a traced source."
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -118.456,
+       33.955
+      ],
+      [
+       -118.447,
+       33.955
+      ],
+      [
+       -118.42,
+       33.9
+      ],
+      [
+       -118.432,
+       33.898
+      ],
+      [
+       -118.456,
+       33.955
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "feature_id": "baldwin-hills-scrub",
+    "name": "Baldwin Hills coastal sage scrub",
+    "landtype": "coastal_sage_scrub",
+    "valid_from": 1769,
+    "valid_to": 1925,
+    "confidence": "speculative",
+    "sources": "UNVERIFIED: placeholder outline drawn by Claude from general geography. Replace with a traced source."
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -118.39,
+       34.0
+      ],
+      [
+       -118.355,
+       34.005
+      ],
+      [
+       -118.345,
+       33.985
+      ],
+      [
+       -118.375,
+       33.975
+      ],
+      [
+       -118.395,
+       33.985
+      ],
+      [
+       -118.39,
+       34.0
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "feature_id": "baldwin-hills-oil-field",
+    "name": "Inglewood oil field",
+    "landtype": "oil_field",
+    "valid_from": 1925,
+    "valid_to": null,
+    "confidence": "speculative",
+    "sources": "UNVERIFIED: placeholder outline drawn by Claude from general geography. Replace with a traced source. Start date approximate."
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -118.385,
+       33.998
+      ],
+      [
+       -118.36,
+       34.001
+      ],
+      [
+       -118.352,
+       33.988
+      ],
+      [
+       -118.378,
+       33.982
+      ],
+      [
+       -118.385,
+       33.998
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "feature_id": "ballona-valley-row-crops",
+    "name": "Ballona Valley bean and grain farming",
+    "landtype": "row_crops",
+    "valid_from": 1890,
+    "valid_to": 1930,
+    "confidence": "speculative",
+    "sources": "UNVERIFIED: placeholder outline drawn by Claude from general geography. Replace with a traced source. Dates are rough guesses."
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -118.405,
+       33.995
+      ],
+      [
+       -118.38,
+       33.992
+      ],
+      [
+       -118.375,
+       33.975
+      ],
+      [
+       -118.35,
+       33.968
+      ],
+      [
+       -118.35,
+       33.945
+      ],
+      [
+       -118.4,
+       33.945
+      ],
+      [
+       -118.405,
+       33.96
+      ],
+      [
+       -118.405,
+       33.995
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "feature_id": "culver-suburb",
+    "name": "Culver City area suburb",
+    "landtype": "suburb",
+    "valid_from": 1925,
+    "valid_to": null,
+    "confidence": "speculative",
+    "sources": "UNVERIFIED: placeholder outline drawn by Claude from general geography. Replace with a traced source. Start date approximate."
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -118.42,
+       34.03
+      ],
+      [
+       -118.38,
+       34.035
+      ],
+      [
+       -118.378,
+       34.01
+      ],
+      [
+       -118.41,
+       34.0
+      ],
+      [
+       -118.42,
+       34.03
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "feature_id": "lax",
+    "name": "Los Angeles Airport",
+    "landtype": "airport",
+    "valid_from": 1930,
+    "valid_to": null,
+    "confidence": "speculative",
+    "sources": "UNVERIFIED: placeholder outline drawn by Claude from general geography. Replace with a traced source. Start date approximate."
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -118.435,
+       33.955
+      ],
+      [
+       -118.395,
+       33.955
+      ],
+      [
+       -118.395,
+       33.925
+      ],
+      [
+       -118.435,
+       33.925
+      ],
+      [
+       -118.435,
+       33.955
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "feature_id": "ballona-creek",
+    "name": "Ballona Creek, natural course",
+    "landtype": "stream",
+    "valid_from": 1769,
+    "valid_to": 1934,
+    "confidence": "speculative",
+    "sources": "Existence supported by Dark et al. 2011 (SCCWRP Technical Report 671); the outline here is an untraced guess."
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -118.38,
+      34.015
+     ],
+     [
+      -118.405,
+      33.995
+     ],
+     [
+      -118.425,
+      33.98
+     ],
+     [
+      -118.44,
+      33.965
+     ],
+     [
+      -118.4475,
+      33.961
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "feature_id": "ballona-creek",
+    "name": "Ballona Creek, concrete flood channel",
+    "landtype": "flood_channel",
+    "valid_from": 1935,
+    "valid_to": null,
+    "confidence": "speculative",
+    "sources": "Channelized in 1935 per the PBS SoCal article on the SCCWRP study. Course here is an untraced guess."
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -118.38,
+      34.015
+     ],
+     [
+      -118.405,
+      33.995
+     ],
+     [
+      -118.425,
+      33.98
+     ],
+     [
+      -118.44,
+      33.965
+     ],
+     [
+      -118.4475,
+      33.961
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "feature_id": "centinela-creek",
+    "name": "Centinela Creek",
+    "landtype": "stream",
+    "valid_from": 1769,
+    "valid_to": 1925,
+    "confidence": "speculative",
+    "sources": "Existence supported by Dark et al. 2011 (SCCWRP Technical Report 671); the outline here is an untraced guess. End date is a guess."
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -118.3426,
+      33.9744
+     ],
+     [
+      -118.37,
+      33.985
+     ],
+     [
+      -118.4,
+      33.985
+     ],
+     [
+      -118.418,
+      33.976
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "feature_id": "centinela-springs",
+    "name": "Centinela Springs",
+    "landtype": "spring",
+    "valid_from": 1769,
+    "valid_to": 1900,
+    "confidence": "documented",
+    "sources": "Coordinates from the Wikipedia entry for Centinela Springs (California Historical Landmark). End date is a guess."
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -118.3426,
+     33.9744
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "feature_id": "la-river",
+    "name": "Los Angeles River, course A, west to Ballona",
+    "landtype": "stream",
+    "valid_from": 1769,
+    "valid_to": 1824,
+    "confidence": "speculative",
+    "sources": "UNVERIFIED: placeholder outline drawn by Claude from general geography. Replace with a traced source.",
+    "notes": "Same feature_id as course B: one river, two versions."
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -118.23,
+      34.04
+     ],
+     [
+      -118.28,
+      34.01
+     ],
+     [
+      -118.34,
+      33.99
+     ],
+     [
+      -118.4,
+      33.975
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "feature_id": "la-river",
+    "name": "Los Angeles River, course B, south to San Pedro Bay",
+    "landtype": "stream",
+    "valid_from": 1825,
+    "valid_to": 1930,
+    "confidence": "speculative",
+    "sources": "UNVERIFIED: placeholder outline drawn by Claude from general geography. Replace with a traced source."
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -118.23,
+      34.04
+     ],
+     [
+      -118.22,
+      33.98
+     ],
+     [
+      -118.2,
+      33.92
+     ],
+     [
+      -118.2,
+      33.85
+     ],
+     [
+      -118.21,
+      33.77
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "feature_id": "lincoln-blvd",
+    "name": "Lincoln Boulevard",
+    "landtype": "street_major",
+    "valid_from": 1900,
+    "valid_to": null,
+    "confidence": "speculative",
+    "sources": "UNVERIFIED: placeholder outline drawn by Claude from general geography. Replace with a traced source. Start date approximate."
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -118.4745,
+      34.0
+     ],
+     [
+      -118.4405,
+      33.985
+     ],
+     [
+      -118.4325,
+      33.965
+     ],
+     [
+      -118.4285,
+      33.945
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "feature_id": "pe-playa-del-rey",
+    "name": "Pacific Electric line to Playa del Rey",
+    "landtype": "railroad_light",
+    "valid_from": 1902,
+    "valid_to": 1953,
+    "confidence": "speculative",
+    "sources": "UNVERIFIED: placeholder outline drawn by Claude from general geography. Replace with a traced source. Dates unverified."
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -118.39,
+      34.02
+     ],
+     [
+      -118.41,
+      33.995
+     ],
+     [
+      -118.43,
+      33.975
+     ],
+     [
+      -118.452,
+      33.962
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "feature_id": "i-405",
+    "name": "San Diego Freeway (I-405)",
+    "landtype": "freeway",
+    "valid_from": 1962,
+    "valid_to": null,
+    "confidence": "speculative",
+    "sources": "UNVERIFIED: placeholder outline drawn by Claude from general geography. Replace with a traced source. Date approximate."
+   },
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -118.475,
+      34.06
+     ],
+     [
+      -118.43,
+      34.0
+     ],
+     [
+      -118.4,
+      33.97
+     ],
+     [
+      -118.37,
+      33.945
+     ],
+     [
+      -118.345,
+      33.92
+     ]
+    ]
+   }
+  }
+ ]
 }
